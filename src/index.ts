@@ -1,1 +1,3 @@
-console.log('Hello Deno World!');
+import config from "./config.ts";
+
+console.log(JSON.stringify(config));
