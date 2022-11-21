@@ -1,3 +1,3 @@
-import config from "./config.ts";
+import { HydraBot } from "./hydra-bot/index.ts";
 
-console.log(JSON.stringify(config));
+HydraBot.start();
