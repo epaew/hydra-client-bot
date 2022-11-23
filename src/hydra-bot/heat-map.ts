@@ -1,3 +1,6 @@
+import { crypto as cryptoNS } from "../../deps.ts";
+const { crypto, toHashString } = cryptoNS;
+
 import { logger } from "../lib/logger.ts";
 
 interface Point {
@@ -41,6 +44,15 @@ class HeatMap {
     } else {
       return this.#map[y][x];
     }
+  }
+
+  async hash() {
+    return toHashString(
+      await crypto.subtle.digest(
+        "MD5",
+        new TextEncoder().encode(JSON.stringify(this.#map)),
+      ),
+    );
   }
 
   #reflectFood({ value, point: { x, y } }: Food) {

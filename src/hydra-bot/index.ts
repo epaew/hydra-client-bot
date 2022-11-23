@@ -8,6 +8,7 @@ import { HeatMap } from "./heat-map.ts";
 const start = async () => {
   const client = new Client(config.api.host);
   const me = await client.join(config.player);
+  let previousHeatMap: HeatMap;
 
   const loopId = setInterval(
     async () => {
@@ -22,6 +23,9 @@ const start = async () => {
         }
 
         const heatMap = new HeatMap(world);
+        if (await heatMap.hash() === await previousHeatMap?.hash()) return;
+        previousHeatMap = heatMap;
+
         const nextDirection = getNextDirection(heatMap)({
           currentDirection: player.headDirection,
           currentPoint: player.bodies[0],
@@ -33,7 +37,7 @@ const start = async () => {
         logger.error(e);
       }
     },
-    1000,
+    750,
   );
 };
 
