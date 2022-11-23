@@ -3,6 +3,8 @@ const { crypto, toHashString } = cryptoNS;
 
 import { logger } from "../lib/logger.ts";
 
+type GameMode = "greedy" | "ignore" | "alive";
+
 interface Point {
   x: number;
   y: number;
@@ -15,19 +17,29 @@ interface Food {
   point: Point;
 }
 
-interface HeatMapConstructorProps {
+interface World {
   width: number;
   height: number;
   players: Player[];
   foods: Food[];
 }
 
+type HeatMapConstructorProps = [GameMode, World];
+
+const GameModeMap: Record<GameMode, number> = {
+  greedy: -1,
+  ignore: 0,
+  alive: 1,
+};
+
 class HeatMap {
+  #mode: GameMode;
   #width: number;
   #height: number;
   #map: number[][];
 
-  constructor({ height, width, players, foods }: HeatMapConstructorProps) {
+  constructor(...[mode, { height, width, players, foods }]: HeatMapConstructorProps) {
+    this.#mode = mode;
     this.#width = width;
     this.#height = height;
     this.#map = Array.from(new Array(height), () => new Array(width).fill(0));
@@ -56,7 +68,7 @@ class HeatMap {
   }
 
   #reflectFood({ value, point: { x, y } }: Food) {
-    this.#map[y][x] -= value;
+    this.#map[y][x] += GameModeMap[this.#mode] * value;
   }
 
   #reflectPlayer(player: Player) {
@@ -78,3 +90,4 @@ class HeatMap {
 }
 
 export { HeatMap };
+export type { GameMode };

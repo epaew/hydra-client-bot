@@ -9,18 +9,4 @@ describe("config", () => {
       });
     });
   });
-
-  describe(".player", () => {
-    describe(".name", () => {
-      it(() => {
-        assertEquals(config.player.name, Deno.env.get("PLAYER_NAME"));
-      });
-    });
-
-    describe(".password", () => {
-      it(() => {
-        assertEquals(config.player.password.length, 8);
-      });
-    });
-  });
 });
